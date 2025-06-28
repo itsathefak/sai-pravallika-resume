@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Linkedin, Mail, FileText } from "lucide-react"
+import { motion } from "framer-motion";
+import { Linkedin, Mail, FileText } from "lucide-react";
 
 export default function SocialLinks() {
   return (
@@ -9,7 +9,7 @@ export default function SocialLinks() {
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="fixed bottom-10 left-10 z-50 flex flex-col items-center space-y-4"
+      className="fixed bottom-10 left-10 z-50 hidden md:flex flex-col items-center space-y-4"
     >
       {/* Icons first */}
       <div className="flex flex-col items-center space-y-6">
@@ -46,5 +46,5 @@ export default function SocialLinks() {
       {/* Line below icons */}
       <div className="w-px h-24 bg-purple-400/50"></div>
     </motion.div>
-  )
+  );
 }
