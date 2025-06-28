@@ -50,10 +50,10 @@ export default function ProjectModal({
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="fixed top-4 left-4 right-4 bottom-4 md:top-8 md:left-24 md:right-24 md:bottom-8 bg-surface rounded-2xl z-[210] overflow-hidden shadow-2xl border border-purple-400/30"
+            className="fixed inset-0 md:top-8 md:left-24 md:right-24 md:bottom-8 bg-surface rounded-none md:rounded-2xl z-[210] overflow-hidden shadow-2xl border border-purple-400/30"
             style={{
-              maxWidth: "calc(100vw - 200px)",
-              maxHeight: "calc(100vh - 64px)",
+              maxWidth: "100vw",
+              maxHeight: "100vh",
             }}
           >
             <div className="flex flex-col h-full">

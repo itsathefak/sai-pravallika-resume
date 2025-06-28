@@ -1,198 +1,220 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Shuffle, RotateCcw, Trophy, Timer, Eye, EyeOff, Settings } from "lucide-react"
-import useSound from "use-sound"
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Shuffle,
+  RotateCcw,
+  Trophy,
+  Timer,
+  Eye,
+  EyeOff,
+  Settings,
+} from "lucide-react";
+import useSound from "use-sound";
 
-const PUZZLE_IMAGE = "/images/puzzle-forest.jpg"
+const PUZZLE_IMAGE = "/images/puzzle-forest.jpg";
 
 interface Tile {
-  id: number
-  currentPos: number
-  correctPos: number
+  id: number;
+  currentPos: number;
+  correctPos: number;
 }
 
 export default function PuzzleGame() {
-  const [grid, setGrid] = useState<Tile[]>([])
-  const [completed, setCompleted] = useState(false)
-  const [moves, setMoves] = useState(0)
-  const [startTime, setStartTime] = useState<number | null>(null)
-  const [time, setTime] = useState(0)
-  const [showInstructions, setShowInstructions] = useState(true)
-  const [difficulty, setDifficulty] = useState("medium") // easy, medium, hard
-  const [showPreview, setShowPreview] = useState(false)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const puzzleContainerRef = useRef(null)
-  const [playClick] = useSound("/sounds/click.mp3", { volume: 0.3 })
-  const [playSuccess] = useSound("/sounds/success.mp3", { volume: 0.5 })
+  const [grid, setGrid] = useState<Tile[]>([]);
+  const [completed, setCompleted] = useState(false);
+  const [moves, setMoves] = useState(0);
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [time, setTime] = useState(0);
+  const [showInstructions, setShowInstructions] = useState(true);
+  const [difficulty, setDifficulty] = useState("medium"); // easy, medium, hard
+  const [showPreview, setShowPreview] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const puzzleContainerRef = useRef(null);
+  const [playClick] = useSound("/sounds/click.mp3", { volume: 0.3 });
+  const [playSuccess] = useSound("/sounds/success.mp3", { volume: 0.5 });
 
   const getGridSize = () => {
     switch (difficulty) {
       case "easy":
-        return 3 // 3x3
+        return 3; // 3x3
       case "medium":
-        return 4 // 4x4
+        return 4; // 4x4
       case "hard":
-        return 5 // 5x5
+        return 5; // 5x5
       default:
-        return 4
+        return 4;
     }
-  }
+  };
 
   useEffect(() => {
-    initializePuzzle()
-  }, [difficulty])
+    initializePuzzle();
+  }, [difficulty]);
 
   useEffect(() => {
-    let interval
+    let interval;
     if (isPlaying && !completed && startTime) {
       interval = setInterval(() => {
-        setTime(Math.floor((Date.now() - startTime) / 1000))
-      }, 1000)
+        setTime(Math.floor((Date.now() - startTime) / 1000));
+      }, 1000);
     }
-    return () => clearInterval(interval)
-  }, [isPlaying, completed, startTime])
+    return () => clearInterval(interval);
+  }, [isPlaying, completed, startTime]);
 
   const initializePuzzle = () => {
-    const gridSize = getGridSize()
-    const totalTiles = gridSize * gridSize
+    const gridSize = getGridSize();
+    const totalTiles = gridSize * gridSize;
 
     const orderedGrid = Array.from({ length: totalTiles - 1 }, (_, i) => ({
       id: i + 1,
       currentPos: i,
       correctPos: i,
-    }))
+    }));
 
     orderedGrid.push({
       id: 0, // 0 represents empty tile
       currentPos: totalTiles - 1,
       correctPos: totalTiles - 1,
-    })
+    });
 
     // Shuffle the puzzle immediately to make it playable
-    const shuffledGrid = createShuffledPuzzle(orderedGrid, gridSize)
-    setGrid(shuffledGrid)
-    setCompleted(false)
-    setStartTime(Date.now())
-    setTime(0)
-    setMoves(0)
-    setIsPlaying(true)
-  }
+    const shuffledGrid = createShuffledPuzzle(orderedGrid, gridSize);
+    setGrid(shuffledGrid);
+    setCompleted(false);
+    setStartTime(Date.now());
+    setTime(0);
+    setMoves(0);
+    setIsPlaying(true);
+  };
 
   const resetPuzzle = () => {
-    const gridSize = getGridSize()
-    const totalTiles = gridSize * gridSize
+    const gridSize = getGridSize();
+    const totalTiles = gridSize * gridSize;
 
     const orderedGrid = Array.from({ length: totalTiles - 1 }, (_, i) => ({
       id: i + 1,
       currentPos: i,
       correctPos: i,
-    }))
+    }));
 
     orderedGrid.push({
       id: 0, // 0 represents empty tile
       currentPos: totalTiles - 1,
       correctPos: totalTiles - 1,
-    })
+    });
 
-    setGrid(orderedGrid)
-    setCompleted(false)
-    setStartTime(null)
-    setTime(0)
-    setMoves(0)
-    setIsPlaying(false)
-    setShowInstructions(true)
-  }
+    setGrid(orderedGrid);
+    setCompleted(false);
+    setStartTime(null);
+    setTime(0);
+    setMoves(0);
+    setIsPlaying(false);
+    setShowInstructions(true);
+  };
 
   const createShuffledPuzzle = (orderedGrid: Tile[], gridSize: number) => {
-    const shuffled = [...orderedGrid]
-    const numMoves = gridSize * gridSize * 15
-    let emptyPos = shuffled.findIndex((tile) => tile.id === 0)
+    const shuffled = [...orderedGrid];
+    const numMoves = gridSize * gridSize * 15;
+    let emptyPos = shuffled.findIndex((tile) => tile.id === 0);
 
     for (let i = 0; i < numMoves; i++) {
-      const possibleMoves = getValidMoves(emptyPos, gridSize)
+      const possibleMoves = getValidMoves(emptyPos, gridSize);
       if (possibleMoves.length > 0) {
-        const randomMoveIndex = Math.floor(Math.random() * possibleMoves.length)
-        const tileToMove = possibleMoves[randomMoveIndex]
-        ;[shuffled[emptyPos], shuffled[tileToMove]] = [shuffled[tileToMove], shuffled[emptyPos]]
+        const randomMoveIndex = Math.floor(
+          Math.random() * possibleMoves.length
+        );
+        const tileToMove = possibleMoves[randomMoveIndex];
+        [shuffled[emptyPos], shuffled[tileToMove]] = [
+          shuffled[tileToMove],
+          shuffled[emptyPos],
+        ];
 
-        shuffled[emptyPos].currentPos = emptyPos
-        shuffled[tileToMove].currentPos = tileToMove
+        shuffled[emptyPos].currentPos = emptyPos;
+        shuffled[tileToMove].currentPos = tileToMove;
 
-        emptyPos = tileToMove
+        emptyPos = tileToMove;
       }
     }
 
-    return shuffled
-  }
+    return shuffled;
+  };
 
   const shufflePuzzle = () => {
-    playClick()
-    const gridSize = getGridSize()
-    const shuffled = createShuffledPuzzle(grid, gridSize)
+    playClick();
+    const gridSize = getGridSize();
+    const shuffled = createShuffledPuzzle(grid, gridSize);
 
-    setGrid(shuffled)
-    setCompleted(false)
-    setStartTime(Date.now())
-    setTime(0)
-    setMoves(0)
-    setIsPlaying(true)
-    setShowInstructions(false)
-  }
+    setGrid(shuffled);
+    setCompleted(false);
+    setStartTime(Date.now());
+    setTime(0);
+    setMoves(0);
+    setIsPlaying(true);
+    setShowInstructions(false);
+  };
 
   const getValidMoves = (emptyPos: number, gridSize: number): number[] => {
-    const validMoves: number[] = []
-    const row = Math.floor(emptyPos / gridSize)
-    const col = emptyPos % gridSize
+    const validMoves: number[] = [];
+    const row = Math.floor(emptyPos / gridSize);
+    const col = emptyPos % gridSize;
 
-    if (row > 0) validMoves.push(emptyPos - gridSize)
-    if (row < gridSize - 1) validMoves.push(emptyPos + gridSize)
-    if (col > 0) validMoves.push(emptyPos - 1)
-    if (col < gridSize - 1) validMoves.push(emptyPos + 1)
+    if (row > 0) validMoves.push(emptyPos - gridSize);
+    if (row < gridSize - 1) validMoves.push(emptyPos + gridSize);
+    if (col > 0) validMoves.push(emptyPos - 1);
+    if (col < gridSize - 1) validMoves.push(emptyPos + 1);
 
-    return validMoves
-  }
+    return validMoves;
+  };
 
   const handleTileClick = (tileIndex: number) => {
-    if (completed) return
+    if (completed) return;
 
-    const gridSize = getGridSize()
-    const emptyTileIndex = grid.findIndex((tile) => tile.id === 0)
-    const validMoves = getValidMoves(emptyTileIndex, gridSize)
+    const gridSize = getGridSize();
+    const emptyTileIndex = grid.findIndex((tile) => tile.id === 0);
+    const validMoves = getValidMoves(emptyTileIndex, gridSize);
 
     if (validMoves.includes(tileIndex)) {
-      playClick()
+      playClick();
 
-      const newGrid = [...grid]
-      ;[newGrid[tileIndex], newGrid[emptyTileIndex]] = [newGrid[emptyTileIndex], newGrid[tileIndex]]
+      const newGrid = [...grid];
+      [newGrid[tileIndex], newGrid[emptyTileIndex]] = [
+        newGrid[emptyTileIndex],
+        newGrid[tileIndex],
+      ];
 
-      newGrid[tileIndex].currentPos = tileIndex
-      newGrid[emptyTileIndex].currentPos = emptyTileIndex
+      newGrid[tileIndex].currentPos = tileIndex;
+      newGrid[emptyTileIndex].currentPos = emptyTileIndex;
 
-      setGrid(newGrid)
-      setMoves(moves + 1)
+      setGrid(newGrid);
+      setMoves(moves + 1);
 
-      const isSolved = newGrid.every((tile) => tile.currentPos === tile.correctPos)
+      const isSolved = newGrid.every(
+        (tile) => tile.currentPos === tile.correctPos
+      );
       if (isSolved) {
-        setCompleted(true)
-        setIsPlaying(false)
-        playSuccess()
+        setCompleted(true);
+        setIsPlaying(false);
+        playSuccess();
       }
     }
-  }
+  };
 
   const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins}:${secs.toString().padStart(2, "0")}`
-  }
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
 
-  const gridSize = getGridSize()
+  const gridSize = getGridSize();
 
   return (
     <section className="section-container bg-transparent">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <h2 className="section-title">Interactive Challenge</h2>
 
         <div className="max-w-3xl mx-auto">
@@ -201,9 +223,12 @@ export default function PuzzleGame() {
             whileHover={{ y: -5 }}
           >
             <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-white mb-4">Environmental Sliding Puzzle</h3>
+              <h3 className="text-2xl font-bold text-white mb-4">
+                Environmental Sliding Puzzle
+              </h3>
               <p className="text-slate-300 mb-6">
-                Solve this nature-themed sliding puzzle! Rearrange the tiles to complete the beautiful forest landscape.
+                Solve this nature-themed sliding puzzle! Rearrange the tiles to
+                complete the beautiful forest landscape.
               </p>
 
               <div className="flex justify-center gap-8 mb-6">
@@ -217,7 +242,8 @@ export default function PuzzleGame() {
                 <div className="flex items-center gap-2 text-blue-300">
                   <Settings size={20} />
                   <span className="font-semibold">
-                    {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} ({gridSize}×{gridSize})
+                    {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)} (
+                    {gridSize}×{gridSize})
                   </span>
                 </div>
               </div>
@@ -226,8 +252,8 @@ export default function PuzzleGame() {
                 <select
                   value={difficulty}
                   onChange={(e) => {
-                    playClick()
-                    setDifficulty(e.target.value)
+                    playClick();
+                    setDifficulty(e.target.value);
                   }}
                   className="px-4 py-2 bg-white/10 border border-purple-400/30 text-white rounded-full transition-all duration-300 hover:border-purple-400/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
@@ -244,8 +270,8 @@ export default function PuzzleGame() {
 
                 <motion.button
                   onClick={() => {
-                    playClick()
-                    setShowPreview(!showPreview)
+                    playClick();
+                    setShowPreview(!showPreview);
                   }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -287,7 +313,9 @@ export default function PuzzleGame() {
                   className="mb-8 overflow-hidden"
                 >
                   <div className="bg-black/30 p-4 rounded-lg border border-purple-400/20">
-                    <p className="text-sm mb-4 text-center text-purple-300">Complete Image Preview</p>
+                    <p className="text-sm mb-4 text-center text-purple-300">
+                      Complete Image Preview
+                    </p>
                     <div className="relative w-full max-w-[300px] h-[300px] mx-auto rounded-lg overflow-hidden border-2 border-purple-400/30">
                       <img
                         src={PUZZLE_IMAGE || "/placeholder.svg"}
@@ -315,29 +343,38 @@ export default function PuzzleGame() {
                     className="bg-surface border border-purple-400/30 p-8 rounded-xl max-w-md text-center"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <h4 className="text-xl font-bold mb-4 text-white">How to Play</h4>
+                    <h4 className="text-xl font-bold mb-4 text-white">
+                      How to Play
+                    </h4>
                     <p className="mb-6 text-slate-300 leading-relaxed">
-                      Click on tiles adjacent to the empty space to move them. Rearrange all tiles to complete the
-                      beautiful forest landscape!
+                      Click on tiles adjacent to the empty space to move them.
+                      Rearrange all tiles to complete the beautiful forest
+                      landscape!
                     </p>
                     <div className="grid grid-cols-3 gap-4 mb-6">
                       <div className="flex flex-col items-center">
                         <div className="bg-purple-500/20 p-3 rounded-lg mb-2">
                           <Timer size={24} className="text-purple-400" />
                         </div>
-                        <span className="text-xs text-slate-400">Track time</span>
+                        <span className="text-xs text-slate-400">
+                          Track time
+                        </span>
                       </div>
                       <div className="flex flex-col items-center">
                         <div className="bg-emerald-500/20 p-3 rounded-lg mb-2">
                           <Eye size={24} className="text-emerald-400" />
                         </div>
-                        <span className="text-xs text-slate-400">Preview image</span>
+                        <span className="text-xs text-slate-400">
+                          Preview image
+                        </span>
                       </div>
                       <div className="flex flex-col items-center">
                         <div className="bg-pink-500/20 p-3 rounded-lg mb-2">
                           <Settings size={24} className="text-pink-400" />
                         </div>
-                        <span className="text-xs text-slate-400">Choose difficulty</span>
+                        <span className="text-xs text-slate-400">
+                          Choose difficulty
+                        </span>
                       </div>
                     </div>
                     <motion.button
@@ -345,8 +382,8 @@ export default function PuzzleGame() {
                       whileTap={{ scale: 0.95 }}
                       className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-full font-medium"
                       onClick={() => {
-                        playClick()
-                        setShowInstructions(false)
+                        playClick();
+                        setShowInstructions(false);
                       }}
                     >
                       Got it!
@@ -370,7 +407,11 @@ export default function PuzzleGame() {
                     key={`${tile.id}-${index}`}
                     className={`
                       relative rounded-lg overflow-hidden border border-purple-400/20
-                      ${tile.id === 0 ? "bg-transparent border-transparent" : "cursor-pointer bg-white/5 hover:border-purple-400/60"}
+                      ${
+                        tile.id === 0
+                          ? "bg-transparent border-transparent"
+                          : "cursor-pointer bg-white/5 hover:border-purple-400/60"
+                      }
                     `}
                     onClick={() => handleTileClick(index)}
                     whileHover={tile.id !== 0 ? { scale: 1.02 } : {}}
@@ -383,7 +424,13 @@ export default function PuzzleGame() {
                           style={{
                             backgroundImage: `url(${PUZZLE_IMAGE})`,
                             backgroundSize: `${gridSize * 100}%`,
-                            backgroundPosition: `${(tile.correctPos % gridSize) * (100 / (gridSize - 1))}% ${Math.floor(tile.correctPos / gridSize) * (100 / (gridSize - 1))}%`,
+                            backgroundPosition: `${
+                              (tile.correctPos % gridSize) *
+                              (100 / (gridSize - 1))
+                            }% ${
+                              Math.floor(tile.correctPos / gridSize) *
+                              (100 / (gridSize - 1))
+                            }%`,
                           }}
                         />
                         <div className="absolute bottom-1 right-1 bg-black/70 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold">
@@ -416,16 +463,24 @@ export default function PuzzleGame() {
                       >
                         <Trophy size={50} className="text-yellow-400 mx-auto" />
                       </motion.div>
-                      <h3 className="text-2xl font-bold mb-2 text-white">Puzzle Completed!</h3>
-                      <p className="text-slate-300 mb-4">Congratulations! You solved the environmental puzzle!</p>
+                      <h3 className="text-2xl font-bold mb-2 text-white">
+                        Puzzle Completed!
+                      </h3>
+                      <p className="text-slate-300 mb-4">
+                        Congratulations! You solved the environmental puzzle!
+                      </p>
                       <div className="bg-white/5 p-4 rounded-lg mb-6 border border-purple-400/20">
                         <div className="grid grid-cols-2 gap-4 text-center">
                           <div>
-                            <div className="text-purple-300 font-bold text-lg">{formatTime(time)}</div>
+                            <div className="text-purple-300 font-bold text-lg">
+                              {formatTime(time)}
+                            </div>
                             <div className="text-slate-400 text-sm">Time</div>
                           </div>
                           <div>
-                            <div className="text-emerald-300 font-bold text-lg">{moves}</div>
+                            <div className="text-emerald-300 font-bold text-lg">
+                              {moves}
+                            </div>
                             <div className="text-slate-400 text-sm">Moves</div>
                           </div>
                         </div>
@@ -444,13 +499,22 @@ export default function PuzzleGame() {
                           whileTap={{ scale: 0.95 }}
                           className="border-2 border-purple-400 text-purple-300 px-6 py-3 rounded-full font-medium hover:border-purple-400/80"
                           onClick={() => {
-                            playClick()
+                            playClick();
                             const nextDifficulty =
-                              difficulty === "easy" ? "medium" : difficulty === "medium" ? "hard" : "easy"
-                            setDifficulty(nextDifficulty)
+                              difficulty === "easy"
+                                ? "medium"
+                                : difficulty === "medium"
+                                ? "hard"
+                                : "easy";
+                            setDifficulty(nextDifficulty);
                           }}
                         >
-                          Try {difficulty === "easy" ? "Medium" : difficulty === "medium" ? "Hard" : "Easy"}
+                          Try{" "}
+                          {difficulty === "easy"
+                            ? "Medium"
+                            : difficulty === "medium"
+                            ? "Hard"
+                            : "Easy"}
                         </motion.button>
                       </div>
                     </motion.div>
@@ -461,13 +525,13 @@ export default function PuzzleGame() {
 
             <div className="text-center mt-6">
               <p className="text-slate-400 text-sm">
-                🌱 This puzzle features a beautiful forest scene representing environmental sustainability and nature
-                conservation
+                🌱 This puzzle features a beautiful forest scene representing
+                environmental sustainability and nature conservation
               </p>
             </div>
           </motion.div>
         </div>
       </motion.div>
     </section>
-  )
+  );
 }
