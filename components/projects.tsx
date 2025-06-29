@@ -28,7 +28,8 @@ const projects = [
       "NDBI",
     ],
     icon: <Satellite size={24} />,
-    color: "from-emerald-500 to-teal-500",
+    color: "from-[#0e1022] to-[#301840]",
+
     description: [
       "Analyzed urban forest loss from 2019-2024 using advanced satellite imagery and machine learning classification models",
       "Implemented Random Forest classification algorithms in Google Earth Engine for accurate land use detection",
@@ -51,7 +52,7 @@ const projects = [
     category: "Urban Planning",
     tech: ["ArcGIS Pro", "Transit Analysis", "Story Maps", "Spatial Analysis"],
     icon: <Map size={24} />,
-    color: "from-purple-500 to-pink-500",
+    color: "from-[#0e1022] to-[#301840]",
     description: [
       "Assessed public park accessibility via bus transit buffers using advanced GIS spatial analysis techniques",
       "Identified significant urban inequalities, particularly highlighting disparities on Saskatoon's west side",
@@ -80,7 +81,7 @@ const projects = [
       "Ecological Modeling",
     ],
     icon: <TreePine size={24} />,
-    color: "from-green-500 to-emerald-500",
+    color: "from-[#0e1022] to-[#301840]",
     description: [
       "Conducted comprehensive field study comparing ecological zones between public and protected areas",
       "Applied biodiversity indices and statistical methods to quantify species richness and ecosystem health",
@@ -109,7 +110,7 @@ const projects = [
       "Community Planning",
     ],
     icon: <Building size={24} />,
-    color: "from-blue-500 to-indigo-500",
+    color: "from-[#0e1022] to-[#301840]",
     description: [
       "Designed comprehensive park revitalization featuring motion sensor lighting and rainwater harvesting systems",
       "Integrated native plant species selection for climate adaptation and reduced maintenance requirements",
@@ -138,7 +139,7 @@ const projects = [
       "Green Mobility",
     ],
     icon: <Building size={24} />,
-    color: "from-orange-500 to-red-500",
+    color: "from-[#0e1022] to-[#301840]",
     description: [
       "Designed sustainable campus promoting interdisciplinary urban problem-solving and innovation",
       "Implemented passive cooling strategies and energy-efficient systems targeting IGBC Platinum certification",
@@ -167,7 +168,7 @@ const projects = [
       "Ecological Planning",
     ],
     icon: <Leaf size={24} />,
-    color: "from-cyan-500 to-blue-500",
+    color: "from-[#0e1022] to-[#301840]",
     description: [
       "Transformed natural water body into inclusive public zone balancing ecological preservation and community access",
       "Designed flood resilience buffer systems for climate change adaptation and natural disaster mitigation",
@@ -194,7 +195,7 @@ const projects = [
       "Community Conservation",
     ],
     icon: <Leaf size={24} />,
-    color: "from-lime-500 to-green-600",
+    color: "from-[#0e1022] to-[#301840]",
     description: [
       "Volunteered in ecological assessment of invasive plant species in Asquith Conservation Area to support regional conservation goals.",
       "Collected and analyzed vegetation data across affected and control plots using standardized biodiversity survey methods.",
