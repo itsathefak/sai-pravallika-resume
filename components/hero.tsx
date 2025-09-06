@@ -2,31 +2,11 @@
 
 import type React from "react";
 import { motion } from "framer-motion";
-import { ArrowDown, Clock } from "lucide-react";
 import useSound from "use-sound";
-import { useEffect, useState } from "react";
+import { ArrowDown } from "lucide-react";
 
 export default function Hero() {
   const [playClick] = useSound("/sounds/click.mp3", { volume: 0.5 });
-  const [currentTime, setCurrentTime] = useState("");
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const saskatoonTime = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/Regina",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true,
-      }).format(now);
-      setCurrentTime(saskatoonTime);
-    };
-
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   const handleScrollDown = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -46,27 +26,12 @@ export default function Hero() {
       id="home"
       className="relative min-h-screen flex items-center justify-center pt-16"
     >
-      {/* Time display - with highest z-index */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="fixed top-6 left-6 z-[120] glass rounded-full px-4 py-2 flex items-center gap-2"
-      >
-        <Clock size={16} className="text-purple-400" />
-        <span className="text-sm text-white/80">Saskatoon, CA</span>
-        <span className="text-sm text-purple-300 font-mono">{currentTime}</span>
-      </motion.div>
-
       <div className="section-container">
         <div className="flex flex-col items-center md:items-start">
-          {/* Mobile-first layout - Bitmoji appears first on mobile */}
+          {/* Mobile bitmoji */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              y: [0, -10, 0], // Slow up and down movement
-            }}
+            animate={{ opacity: 1, scale: 1, y: [0, -10, 0] }}
             transition={{
               duration: 0.8,
               y: {
@@ -79,7 +44,6 @@ export default function Hero() {
             className="relative mb-8 md:hidden"
           >
             <div className="w-80 h-80 mx-auto overflow-visible relative">
-              {/* Enhanced violet glow effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/40 to-violet-600/40 rounded-full blur-2xl scale-125 animate-pulse"></div>
               <div className="absolute inset-0 bg-gradient-to-br from-purple-400/30 to-pink-500/30 rounded-full blur-xl scale-110"></div>
               <img
@@ -89,13 +53,9 @@ export default function Hero() {
               />
             </div>
 
-            {/* Star - keep as is */}
             <motion.div
               className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg"
-              animate={{
-                rotate: [0, 360],
-                scale: [1, 1.1, 1],
-              }}
+              animate={{ rotate: [0, 360], scale: [1, 1.1, 1] }}
               transition={{
                 duration: 4,
                 repeat: Number.POSITIVE_INFINITY,
@@ -111,13 +71,9 @@ export default function Hero() {
               </svg>
             </motion.div>
 
-            {/* Pretty Moon instead of green rotating thing */}
             <motion.div
               className="absolute -bottom-4 -right-4 w-16 h-16 bg-gradient-to-br from-purple-400 to-indigo-600 rounded-full flex items-center justify-center shadow-xl"
-              animate={{
-                rotate: [0, 360],
-                scale: [1, 1.1, 1],
-              }}
+              animate={{ rotate: [0, 360], scale: [1, 1.1, 1] }}
               transition={{
                 duration: 6,
                 repeat: Number.POSITIVE_INFINITY,
@@ -174,10 +130,10 @@ export default function Hero() {
                   onClick={(e) => {
                     e.preventDefault();
                     playClick();
-                    const contactSection = document.getElementById("contact");
-                    if (contactSection) {
+                    const el = document.getElementById("contact");
+                    if (el) {
                       window.scrollTo({
-                        top: contactSection.offsetTop,
+                        top: el.offsetTop,
                         behavior: "smooth",
                       });
                     }
@@ -209,14 +165,10 @@ export default function Hero() {
               </div>
             </motion.div>
 
-            {/* Desktop bitmoji - hidden on mobile */}
+            {/* Desktop bitmoji */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-                y: [0, -10, 0], // Slow up and down movement
-              }}
+              animate={{ opacity: 1, scale: 1, y: [0, -10, 0] }}
               transition={{
                 duration: 0.8,
                 delay: 0.2,
@@ -230,7 +182,6 @@ export default function Hero() {
               className="relative hidden md:block"
             >
               <div className="w-[22rem] h-[22rem] mx-auto overflow-visible relative">
-                {/* Enhanced violet glow effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/40 to-violet-600/40 rounded-full blur-2xl scale-125 animate-pulse"></div>
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-400/30 to-pink-500/30 rounded-full blur-xl scale-110"></div>
                 <img
@@ -240,13 +191,9 @@ export default function Hero() {
                 />
               </div>
 
-              {/* Star - keep as is */}
               <motion.div
                 className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-xl"
-                animate={{
-                  rotate: [0, 360],
-                  scale: [1, 1.1, 1],
-                }}
+                animate={{ rotate: [0, 360], scale: [1, 1.1, 1] }}
                 transition={{
                   duration: 4,
                   repeat: Number.POSITIVE_INFINITY,
@@ -262,13 +209,9 @@ export default function Hero() {
                 </svg>
               </motion.div>
 
-              {/* Pretty Moon */}
               <motion.div
                 className="absolute -bottom-6 -right-6 w-20 h-20 bg-gradient-to-br from-purple-400 to-indigo-600 rounded-full flex items-center justify-center shadow-xl"
-                animate={{
-                  rotate: [0, 360],
-                  scale: [1, 1.1, 1],
-                }}
+                animate={{ rotate: [0, 360], scale: [1, 1.1, 1] }}
                 transition={{
                   duration: 6,
                   repeat: Number.POSITIVE_INFINITY,

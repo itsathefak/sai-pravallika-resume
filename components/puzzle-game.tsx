@@ -53,13 +53,21 @@ export default function PuzzleGame() {
   }, [difficulty]);
 
   useEffect(() => {
-    let interval;
-    if (isPlaying && !completed && startTime) {
-      interval = setInterval(() => {
-        setTime(Math.floor((Date.now() - startTime) / 1000));
+    let intervalId: number | undefined;
+
+    if (isPlaying && !completed && startTime != null) {
+      // capture the value so TS knows it's not null inside the callback
+      const startedAt = startTime;
+      intervalId = window.setInterval(() => {
+        setTime(Math.floor((Date.now() - startedAt) / 1000));
       }, 1000);
     }
-    return () => clearInterval(interval);
+
+    return () => {
+      if (intervalId !== undefined) {
+        window.clearInterval(intervalId);
+      }
+    };
   }, [isPlaying, completed, startTime]);
 
   const initializePuzzle = () => {
@@ -316,7 +324,13 @@ export default function PuzzleGame() {
                     <p className="text-sm mb-4 text-center text-purple-300">
                       Complete Image Preview
                     </p>
-                    <div className="relative w-full max-w-[300px] h-[300px] mx-auto rounded-lg overflow-hidden border-2 border-purple-400/30">
+                    <div
+                      className="relative mx-auto rounded-lg overflow-hidden border-2 border-purple-400/30"
+                      style={{
+                        width: "min(85vw, 300px)",
+                        height: "min(85vw, 300px)",
+                      }}
+                    >
                       <img
                         src={PUZZLE_IMAGE || "/placeholder.svg"}
                         alt="Forest landscape preview"
@@ -393,13 +407,17 @@ export default function PuzzleGame() {
               )}
             </AnimatePresence>
 
-            <div className="relative mx-auto w-fit" ref={puzzleContainerRef}>
+            <div
+              className="relative mx-auto w-full flex justify-center"
+              ref={puzzleContainerRef}
+            >
               <div
                 className="grid gap-1 bg-white/5 p-4 rounded-xl border border-purple-400/20"
                 style={{
                   gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
-                  width: "400px",
-                  height: "400px",
+                  width: "min(92vw, 400px)",
+                  height: "min(92vw, 400px)",
+                  boxSizing: "border-box",
                 }}
               >
                 {grid.map((tile, index) => (

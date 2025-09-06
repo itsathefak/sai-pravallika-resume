@@ -1,58 +1,90 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import LoadingScreen from "@/components/loading-screen"
-import Sidebar from "@/components/sidebar"
-import Hero from "@/components/hero"
-import About from "@/components/about"
-import Experience from "@/components/experience"
-import Projects from "@/components/projects"
-import Skills from "@/components/skills"
-import PuzzleGame from "@/components/puzzle-game"
-import Contact from "@/components/contact"
-import Footer from "@/components/footer"
-import NatureBackground from "@/components/nature-background"
-import MobileNav from "@/components/mobile-nav"
-import SocialLinks from "@/components/social-links"
-import ShootingStars from "@/components/shooting-stars"
-import Head from "next/head"
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Clock } from "lucide-react";
+import Head from "next/head";
 
-export default function Home() {
-  const [loading, setLoading] = useState(true)
-  const [isMobile, setIsMobile] = useState(false)
+// Sections / components
+import Sidebar from "@/components/sidebar";
+import Hero from "@/components/hero";
+import About from "@/components/about";
+import Experience from "@/components/experience";
+import Projects from "@/components/projects";
+import Skills from "@/components/skills";
+import PuzzleGame from "@/components/puzzle-game";
+import Contact from "@/components/contact";
+import Footer from "@/components/footer";
+import NatureBackground from "@/components/nature-background";
+import MobileNav from "@/components/mobile-nav";
+import SocialLinks from "@/components/social-links";
+import ShootingStars from "@/components/shooting-stars";
+
+// Fixed, site-wide time overlay (Saskatoon time)
+function TimeOverlay() {
+  const [currentTime, setCurrentTime] = useState("");
 
   useEffect(() => {
-    // Check if we're on mobile
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
+    const updateTime = () => {
+      const now = new Date();
+      const saskatoonTime = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/Regina",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      }).format(now);
+      setCurrentTime(saskatoonTime);
+    };
 
-    // Initial check
-    checkMobile()
+    updateTime();
+    const id: number = window.setInterval(updateTime, 1000);
+    return () => window.clearInterval(id);
+  }, []);
 
-    // Listen for resize events
-    window.addEventListener("resize", checkMobile)
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -12 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="pointer-events-none fixed top-6 right-6 z-[9999]"
+    >
+      <div className="pointer-events-auto glass rounded-full px-4 py-2 flex items-center gap-2">
+        <Clock size={16} className="text-purple-400" />
+        <span className="text-sm text-white/80">Saskatoon, CA</span>
+        <span className="text-sm text-purple-300 font-mono">{currentTime}</span>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function Home() {
+  const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Detect mobile
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
 
     // Preload sounds
-    const clickSound = new Audio("/sounds/click.mp3")
-    const successSound = new Audio("/sounds/success.mp3")
-    clickSound.preload = "auto"
-    successSound.preload = "auto"
+    const clickSound = new Audio("/sounds/click.mp3");
+    const successSound = new Audio("/sounds/success.mp3");
+    clickSound.preload = "auto";
+    successSound.preload = "auto";
 
-    // Simulate loading time
-    const timer = setTimeout(() => {
-      setLoading(false)
-    }, 3000)
+    // Simulated loading (if you enable the LoadingScreen)
+    const timer = window.setTimeout(() => setLoading(false), 3000);
 
     return () => {
-      clearTimeout(timer)
-      window.removeEventListener("resize", checkMobile)
-    }
-  }, [])
+      window.clearTimeout(timer);
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
 
-  if (loading) {
-    return <LoadingScreen />
-  }
+  // if (loading) {
+  //   return <LoadingScreen />
+  // }
 
   return (
     <>
@@ -60,7 +92,11 @@ export default function Home() {
         <title>Sai Pravallika Allu | Sustainability & Architecture</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
       <main className="relative min-h-screen bg-background text-white">
+        {/* Global time overlay at top of everything */}
+        <TimeOverlay />
+
         {/* Enhanced Aurora effect */}
         <div className="fixed inset-0 z-0">
           <div className="aurora opacity-60"></div>
@@ -69,13 +105,13 @@ export default function Home() {
         <NatureBackground />
         <ShootingStars />
 
-        {/* Show sidebar only on desktop */}
+        {/* Sidebar on desktop */}
         {!isMobile && <Sidebar />}
 
-        {/* Show mobile navigation on mobile */}
+        {/* Mobile nav on mobile */}
         {isMobile && <MobileNav />}
 
-        {/* Social links on bottom left */}
+        {/* Social links (bottom-left) */}
         <SocialLinks />
 
         <Hero />
@@ -88,5 +124,5 @@ export default function Home() {
         <Footer />
       </main>
     </>
-  )
+  );
 }

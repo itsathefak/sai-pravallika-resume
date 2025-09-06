@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Heart, Linkedin, Mail, FileText } from "lucide-react"
+import { motion } from "framer-motion";
+import { Heart, Linkedin, Mail, FileText } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -38,11 +38,15 @@ export default function Footer() {
         >
           {/* Main content */}
           <div className="mb-12">
-            <motion.h3 className="text-3xl font-bold mb-4 gradient-text" whileHover={{ scale: 1.05 }}>
+            <motion.h3
+              className="text-3xl font-bold mb-4 gradient-text"
+              whileHover={{ scale: 1.05 }}
+            >
               Let's Build a Sustainable Future Together
             </motion.h3>
             <p className="text-slate-300 text-lg max-w-2xl mx-auto leading-relaxed">
-              Investing energy in joyful sustainability through innovative architecture and regenerative design.
+              Investing energy in joyful sustainability through innovative
+              architecture and regenerative design.
             </p>
           </div>
 
@@ -60,7 +64,7 @@ export default function Footer() {
               <Linkedin size={24} />
             </motion.a>
             <motion.a
-              href="mailto:allusaipravallika2010@gmail.com"
+              href="mailto:saipravallika.allu@usask.ca"
               className="bg-gradient-to-br from-emerald-500 to-teal-500 p-4 rounded-full text-white shadow-lg hover:shadow-xl transition-all duration-300"
               whileHover={{ scale: 1.1, rotate: -5 }}
               whileTap={{ scale: 0.95 }}
@@ -94,7 +98,9 @@ export default function Footer() {
               animate={{ width: 96 }}
               transition={{ duration: 1, delay: 0.5 }}
             />
-            <h2 className="text-2xl font-bold gradient-text whitespace-nowrap">Sai Pravallika Allu</h2>
+            <h2 className="text-2xl font-bold gradient-text whitespace-nowrap">
+              Sai Pravallika Allu
+            </h2>
             <motion.div
               className="w-24 h-px bg-gradient-to-l from-transparent to-purple-400 ml-6"
               initial={{ width: 0 }}
@@ -105,18 +111,23 @@ export default function Footer() {
 
           {/* Copyright and tagline */}
           <div className="border-t border-purple-400/20 pt-8">
-            <motion.p className="text-slate-400 mb-2" whileHover={{ color: "#a78bfa" }}>
+            <motion.p
+              className="text-slate-400 mb-2"
+              whileHover={{ color: "#a78bfa" }}
+            >
               © 2025 Sai Pravallika Allu. All rights reserved.
             </motion.p>
             <motion.p
               className="text-purple-300 italic flex items-center justify-center gap-2"
               whileHover={{ scale: 1.05 }}
             >
-              Made with <Heart size={16} className="text-pink-400" fill="currentColor" /> for sustainable architecture
+              Made with{" "}
+              <Heart size={16} className="text-pink-400" fill="currentColor" />{" "}
+              for sustainable architecture
             </motion.p>
           </div>
         </motion.div>
       </div>
     </footer>
-  )
+  );
 }

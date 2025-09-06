@@ -1,28 +1,31 @@
-import { type NextRequest, NextResponse } from "next/server"
-import nodemailer from "nodemailer"
+import { type NextRequest, NextResponse } from "next/server";
+// import nodemailer from "nodemailer";
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, message } = await request.json()
+    const { name, email, message } = await request.json();
 
     // Validate input
     if (!name || !email || !message) {
-      return NextResponse.json({ error: "All fields are required" }, { status: 400 })
+      return NextResponse.json(
+        { error: "All fields are required" },
+        { status: 400 }
+      );
     }
 
     // Create transporter (you'll need to set up environment variables)
-    const transporter = nodemailer.createTransporter({
-      service: "gmail", // or your preferred email service
-      auth: {
-        user: process.env.EMAIL_USER, // Your email
-        pass: process.env.EMAIL_PASS, // Your app password
-      },
-    })
+    // const transporter = nodemailer.createTransporter({
+    //   service: "gmail", // or your preferred email service
+    //   auth: {
+    //     user: process.env.EMAIL_USER, // Your email
+    //     pass: process.env.EMAIL_PASS, // Your app password
+    //   },
+    // });
 
     // Email to Sai Pravallika
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: "allusaipravallika2010@gmail.com", // Sai's email
+      to: "saipravallika.allu@usask.ca", // Sai's email
       subject: `New Portfolio Contact: ${name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -48,14 +51,20 @@ export async function POST(request: NextRequest) {
           </div>
         </div>
       `,
-    }
+    };
 
     // Send email
-    await transporter.sendMail(mailOptions)
+    // await transporter.sendMail(mailOptions);
 
-    return NextResponse.json({ message: "Email sent successfully!" }, { status: 200 })
+    return NextResponse.json(
+      { message: "Email sent successfully!" },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error("Error sending email:", error)
-    return NextResponse.json({ error: "Failed to send email" }, { status: 500 })
+    console.error("Error sending email:", error);
+    return NextResponse.json(
+      { error: "Failed to send email" },
+      { status: 500 }
+    );
   }
 }

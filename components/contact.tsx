@@ -1,38 +1,40 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { useInView } from "react-intersection-observer"
-import { Mail, Phone, Linkedin, Send, MapPin, FileText } from "lucide-react"
-import useSound from "use-sound"
+import type React from "react";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import { Mail, Phone, Linkedin, Send, MapPin, FileText } from "lucide-react";
+import useSound from "use-sound";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
-  const [error, setError] = useState("")
-  const [playClick] = useSound("/sounds/click.mp3", { volume: 0.5 })
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+  const [playClick] = useSound("/sounds/click.mp3", { volume: 0.5 });
 
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
-  })
+  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    playClick()
-    setIsSubmitting(true)
-    setError("")
+    e.preventDefault();
+    playClick();
+    setIsSubmitting(true);
+    setError("");
 
     try {
       const response = await fetch("/api/contact", {
@@ -41,36 +43,36 @@ export default function Contact() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
-      })
+      });
 
       if (response.ok) {
-        setSubmitted(true)
-        setFormData({ name: "", email: "", message: "" })
+        setSubmitted(true);
+        setFormData({ name: "", email: "", message: "" });
 
         // Reset success message after 5 seconds
         setTimeout(() => {
-          setSubmitted(false)
-        }, 5000)
+          setSubmitted(false);
+        }, 5000);
       } else {
-        const data = await response.json()
-        setError(data.error || "Failed to send message")
+        const data = await response.json();
+        setError(data.error || "Failed to send message");
       }
     } catch (error) {
-      setError("Failed to send message. Please try again.")
+      setError("Failed to send message. Please try again.");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
-  }
+  };
 
   const formVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0 },
-  }
+  };
 
   return (
     <section id="contact" className="section-container relative bg-transparent">
@@ -103,12 +105,16 @@ export default function Contact() {
           <motion.div variants={formVariants} transition={{ delay: 0.2 }}>
             <h3 className="text-3xl font-bold text-white mb-6">Get In Touch</h3>
             <p className="text-slate-300 mb-8 text-lg leading-relaxed">
-              I'm always excited to discuss sustainable architecture, urban planning projects, or collaboration
-              opportunities. Let's create something amazing together!
+              I'm always excited to discuss sustainable architecture, urban
+              planning projects, or collaboration opportunities. Let's create
+              something amazing together!
             </p>
 
             <div className="space-y-6">
-              <motion.div className="flex items-center gap-4 group" whileHover={{ x: 5 }}>
+              <motion.div
+                className="flex items-center gap-4 group"
+                whileHover={{ x: 5 }}
+              >
                 <motion.div
                   className="bg-gradient-to-br from-purple-500 to-pink-500 p-4 rounded-full text-white shadow-lg"
                   whileHover={{ scale: 1.1, rotate: 10 }}
@@ -122,7 +128,10 @@ export default function Contact() {
                 </div>
               </motion.div>
 
-              <motion.div className="flex items-center gap-4 group" whileHover={{ x: 5 }}>
+              <motion.div
+                className="flex items-center gap-4 group"
+                whileHover={{ x: 5 }}
+              >
                 <motion.div
                   className="bg-gradient-to-br from-emerald-500 to-teal-500 p-4 rounded-full text-white shadow-lg"
                   whileHover={{ scale: 1.1, rotate: 10 }}
@@ -132,11 +141,16 @@ export default function Contact() {
                 </motion.div>
                 <div>
                   <h4 className="text-white font-semibold text-lg">Email</h4>
-                  <p className="text-emerald-300">allusaipravallika2010@gmail.com</p>
+                  <p className="text-emerald-300">
+                    saipravallika.allu@usask.ca
+                  </p>
                 </div>
               </motion.div>
 
-              <motion.div className="flex items-center gap-4 group" whileHover={{ x: 5 }}>
+              <motion.div
+                className="flex items-center gap-4 group"
+                whileHover={{ x: 5 }}
+              >
                 <motion.div
                   className="bg-gradient-to-br from-blue-500 to-indigo-500 p-4 rounded-full text-white shadow-lg"
                   whileHover={{ scale: 1.1, rotate: 10 }}
@@ -157,7 +171,10 @@ export default function Contact() {
                 </div>
               </motion.div>
 
-              <motion.div className="flex items-center gap-4 group" whileHover={{ x: 5 }}>
+              <motion.div
+                className="flex items-center gap-4 group"
+                whileHover={{ x: 5 }}
+              >
                 <motion.div
                   className="bg-gradient-to-br from-orange-500 to-red-500 p-4 rounded-full text-white shadow-lg"
                   whileHover={{ scale: 1.1, rotate: 10 }}
@@ -166,7 +183,9 @@ export default function Contact() {
                   <FileText size={24} />
                 </motion.div>
                 <div>
-                  <h4 className="text-white font-semibold text-lg">Portfolio PDF</h4>
+                  <h4 className="text-white font-semibold text-lg">
+                    Portfolio PDF
+                  </h4>
                   <a
                     href="/portfolio.pdf"
                     target="_blank"
@@ -178,7 +197,10 @@ export default function Contact() {
                 </div>
               </motion.div>
 
-              <motion.div className="flex items-center gap-4 group" whileHover={{ x: 5 }}>
+              <motion.div
+                className="flex items-center gap-4 group"
+                whileHover={{ x: 5 }}
+              >
                 <motion.div
                   className="bg-gradient-to-br from-green-500 to-emerald-500 p-4 rounded-full text-white shadow-lg"
                   whileHover={{ scale: 1.1, rotate: 10 }}
@@ -188,7 +210,9 @@ export default function Contact() {
                 </motion.div>
                 <div>
                   <h4 className="text-white font-semibold text-lg">Location</h4>
-                  <p className="text-green-300">Saskatoon, Saskatchewan, Canada</p>
+                  <p className="text-green-300">
+                    Saskatoon, Saskatchewan, Canada
+                  </p>
                 </div>
               </motion.div>
             </div>
@@ -203,7 +227,9 @@ export default function Contact() {
                   animate={{ opacity: 1, scale: 1 }}
                 >
                   <div className="bg-emerald-500/20 text-emerald-300 p-6 rounded-xl mb-6 border border-emerald-500/30">
-                    <h3 className="text-xl font-bold mb-2">Thank you for reaching out!</h3>
+                    <h3 className="text-xl font-bold mb-2">
+                      Thank you for reaching out!
+                    </h3>
                     <p>I'll get back to you as soon as possible.</p>
                   </div>
                   <button
@@ -222,7 +248,10 @@ export default function Contact() {
                   )}
 
                   <div className="mb-6">
-                    <label htmlFor="name" className="block text-purple-300 mb-2 font-medium">
+                    <label
+                      htmlFor="name"
+                      className="block text-purple-300 mb-2 font-medium"
+                    >
                       Name
                     </label>
                     <input
@@ -238,7 +267,10 @@ export default function Contact() {
                   </div>
 
                   <div className="mb-6">
-                    <label htmlFor="email" className="block text-purple-300 mb-2 font-medium">
+                    <label
+                      htmlFor="email"
+                      className="block text-purple-300 mb-2 font-medium"
+                    >
                       Email
                     </label>
                     <input
@@ -254,7 +286,10 @@ export default function Contact() {
                   </div>
 
                   <div className="mb-8">
-                    <label htmlFor="message" className="block text-purple-300 mb-2 font-medium">
+                    <label
+                      htmlFor="message"
+                      className="block text-purple-300 mb-2 font-medium"
+                    >
                       Message
                     </label>
                     <textarea
@@ -283,7 +318,11 @@ export default function Contact() {
                       <>
                         <motion.div
                           animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                          transition={{
+                            duration: 1,
+                            repeat: Number.POSITIVE_INFINITY,
+                            ease: "linear",
+                          }}
                           className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
                         />
                         Sending...
@@ -301,5 +340,5 @@ export default function Contact() {
         </div>
       </motion.div>
     </section>
-  )
+  );
 }

@@ -9,7 +9,7 @@ export default function SocialLinks() {
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="fixed bottom-10 left-10 z-50 hidden md:flex flex-col items-center space-y-4"
+      className="fixed bottom-10 right-10 z-50 hidden md:flex flex-col items-center space-y-4"
     >
       {/* Icons first */}
       <div className="flex flex-col items-center space-y-6">
@@ -24,7 +24,7 @@ export default function SocialLinks() {
           <Linkedin size={20} />
         </motion.a>
         <motion.a
-          href="mailto:allusaipravallika2010@gmail.com"
+          href="mailto:saipravallika.allu@usask.ca"
           className="text-purple-300 hover:text-purple-400 transition-colors duration-300"
           whileHover={{ scale: 1.2, y: -2 }}
           aria-label="Email"
