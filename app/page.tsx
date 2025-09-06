@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Clock } from "lucide-react";
 import Head from "next/head";
 
@@ -20,7 +20,7 @@ import MobileNav from "@/components/mobile-nav";
 import SocialLinks from "@/components/social-links";
 import ShootingStars from "@/components/shooting-stars";
 
-// Fixed, site-wide time overlay (Saskatoon time)
+// Fixed time overlay (top-right)
 function TimeOverlay() {
   const [currentTime, setCurrentTime] = useState("");
 
@@ -46,6 +46,7 @@ function TimeOverlay() {
     <motion.div
       initial={{ opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -12 }}
       className="pointer-events-none fixed top-6 right-6 z-[9999]"
     >
       <div className="pointer-events-auto glass rounded-full px-4 py-2 flex items-center gap-2">
@@ -60,6 +61,7 @@ function TimeOverlay() {
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [showClock, setShowClock] = useState(true); // show only when Hero is visible
 
   useEffect(() => {
     // Detect mobile
@@ -73,7 +75,7 @@ export default function Home() {
     clickSound.preload = "auto";
     successSound.preload = "auto";
 
-    // Simulated loading (if you enable the LoadingScreen)
+    // Simulated loading
     const timer = window.setTimeout(() => setLoading(false), 3000);
 
     return () => {
@@ -82,9 +84,26 @@ export default function Home() {
     };
   }, []);
 
-  // if (loading) {
-  //   return <LoadingScreen />
-  // }
+  // Show the clock only while the #home (Hero) section is in view
+  useEffect(() => {
+    const hero = document.getElementById("home");
+    if (!hero) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowClock(entry.isIntersecting);
+      },
+      {
+        root: null,
+        threshold: 0.05, // show when at least ~5% of hero is visible
+      }
+    );
+
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, []);
+
+  // if (loading) return <LoadingScreen />
 
   return (
     <>
@@ -94,8 +113,8 @@ export default function Home() {
       </Head>
 
       <main className="relative min-h-screen bg-background text-white">
-        {/* Global time overlay at top of everything */}
-        <TimeOverlay />
+        {/* Clock appears only when Hero is intersecting */}
+        <AnimatePresence>{showClock && <TimeOverlay />}</AnimatePresence>
 
         {/* Enhanced Aurora effect */}
         <div className="fixed inset-0 z-0">
@@ -111,7 +130,7 @@ export default function Home() {
         {/* Mobile nav on mobile */}
         {isMobile && <MobileNav />}
 
-        {/* Social links (bottom-left) */}
+        {/* Social links (bottom-right) */}
         <SocialLinks />
 
         <Hero />
